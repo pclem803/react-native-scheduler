@@ -13,7 +13,6 @@ const Course = ({ course }) => (
 
 const styles = StyleSheet.create({
   courseButton: {
-    flex: 1,
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
