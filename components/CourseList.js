@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import { getCourseTerm } from "./utils/course.js";
 
-const CourseList = ({ courses }) => {
+const CourseList = ({ courses, view }) => {
   const [selectedTerm, setSelectedTerm] = useState("Fall");
 
   const termCourses = courses.filter(
@@ -18,7 +18,7 @@ const CourseList = ({ courses }) => {
         selectedTerm={selectedTerm}
         setSelectedTerm={setSelectedTerm}
       />
-      <CourseSelector courses={termCourses} />
+      <CourseSelector courses={termCourses} view={view} />
     </ScrollView>
   );
 };
