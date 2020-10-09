@@ -9,13 +9,18 @@ import {
 } from "react-native";
 import CourseList from "../components/CourseList.js";
 import UserContext from "../UserContext";
+import { firebase } from "../firebase.js";
+
+const fixCourses = json => ({
+  ...json,
+  courses: Object.values(json.courses)
+});
 
 const ScheduleScreen = ({ navigation }) => {
   const user = useContext(UserContext);
   const canEdit = user && user.role === "admin";
 
   const [schedule, setSchedule] = useState({ title: "", courses: [] });
-  const url = "https://courses.cs.northwestern.edu/394/data/cs-courses.php";
 
   const view = course => {
     navigation.navigate(canEdit ? "CourseEditScreen" : "CourseDetailScreen", {
@@ -24,13 +29,17 @@ const ScheduleScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const fetchSchedule = async () => {
-      const response = await fetch(url);
-      if (!response.ok) throw response;
-      const json = await response.json();
-      setSchedule(json);
+    const db = firebase.database().ref();
+    db.on(
+      "value",
+      snap => {
+        if (snap.val()) setSchedule(fixCourses(snap.val()));
+      },
+      error => console.log(error)
+    );
+    return () => {
+      db.off("value", handleData);
     };
-    fetchSchedule();
   }, []);
 
   return (
